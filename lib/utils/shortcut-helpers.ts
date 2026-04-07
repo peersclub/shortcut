@@ -45,35 +45,6 @@ export function isControlFlowAction(action: string): boolean {
 }
 
 export function downloadShortcutFile(name: string, base64File: string) {
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  
-  const binaryStr = atob(base64File);
-  const bytes = new Uint8Array(binaryStr.length);
-  for (let i = 0; i < binaryStr.length; i++) {
-    bytes[i] = binaryStr.charCodeAt(i);
-  }
-  const blob = new Blob([bytes], { type: "application/x-apple-shortcut" });
-  
-  if (isIOS) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${name}.shortcut`;
-    a.target = "_blank";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }, 100);
-  } else {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${name}.shortcut`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
+  const url = `/api/download?data=${encodeURIComponent(base64File)}&name=${encodeURIComponent(name)}`;
+  window.location.href = url;
 }
