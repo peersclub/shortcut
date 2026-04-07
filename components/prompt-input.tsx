@@ -7,9 +7,13 @@ interface PromptInputProps {
   onChange: (value: string) => void;
   onSubmit: () => void;
   loading: boolean;
+  remixTemplate?: {
+    name: string;
+    onClear: () => void;
+  };
 }
 
-export default function PromptInput({ value, onChange, onSubmit, loading }: PromptInputProps) {
+export default function PromptInput({ value, onChange, onSubmit, loading, remixTemplate }: PromptInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -28,6 +32,22 @@ export default function PromptInput({ value, onChange, onSubmit, loading }: Prom
 
   return (
     <div className="w-full max-w-xl">
+      {remixTemplate && (
+        <div className="mb-3 px-4 py-2 bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/30 rounded-xl flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            <span className="text-sm text-purple-300">Remixing: <span className="font-semibold">{remixTemplate.name}</span></span>
+          </div>
+          <button
+            onClick={remixTemplate.onClear}
+            className="text-xs text-purple-400 hover:text-purple-300 underline"
+          >
+            Clear
+          </button>
+        </div>
+      )}
       <div className="relative bg-gray-900 border border-gray-700 rounded-2xl focus-within:border-blue-500 transition-colors shadow-lg">
         <textarea
           ref={textareaRef}
