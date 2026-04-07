@@ -1,0 +1,11 @@
+{
+  "app": "obsidian",
+  "vaults": {
+    "shortcut": {
+      "id": "shortcut-project",
+      "path": "/Users/Victor/Projects22/shortcut",
+      "name": "Shortcut Generator",
+      "ts": 1744051200000
+    }
+  }
+}
