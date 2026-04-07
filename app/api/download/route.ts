@@ -15,27 +15,15 @@ export async function GET(request: NextRequest) {
     bytes[i] = binaryStr.charCodeAt(i);
   }
 
-  const isIOS = request.headers.get("user-agent")?.includes("iPhone") ||
-                request.headers.get("user-agent")?.includes("iPad");
-
-  if (isIOS) {
-    return new NextResponse(bytes, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/vnd.apple.shortcut",
-        "Content-Disposition": `inline; filename="${encodeURIComponent(name)}.shortcut"`,
-        "Content-Length": bytes.length.toString(),
-        "Transfer-Encoding": "chunked",
-      },
-    });
-  }
-
   return new NextResponse(bytes, {
     status: 200,
     headers: {
-      "Content-Type": "application/octet-stream",
+      "Content-Type": "application/x-shortcut",
       "Content-Disposition": `attachment; filename="${encodeURIComponent(name)}.shortcut"`,
       "Content-Length": bytes.length.toString(),
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0",
     },
   });
 }

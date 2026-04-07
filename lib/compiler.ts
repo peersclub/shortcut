@@ -298,11 +298,15 @@ export function compileShortcut(definition: ShortcutDefinition): Buffer {
     WFWorkflowName: definition.name,
   };
 
-  // Generate XML plist and gzip it (macOS/iOS .shortcut format)
+  // Generate XML plist (shortcut files are gzip-compressed plist)
   const xmlPlist = plist.build(shortcutPlist as unknown as plist.PlistObject);
-  const gzipped = zlib.gzipSync(Buffer.from(xmlPlist, "utf-8"));
-
-  return gzipped;
+  
+  // Compress with gzip
+  const gzipped = zlib.createGzip();
+  gzipped.write(xmlPlist, "utf-8");
+  gzipped.end();
+  
+  return zlib.gzipSync(Buffer.from(xmlPlist, "utf-8"));
 }
 
 // ─── Validation ────────────────────────────────

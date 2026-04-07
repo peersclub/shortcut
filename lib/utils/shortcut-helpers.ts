@@ -45,6 +45,13 @@ export function isControlFlowAction(action: string): boolean {
 }
 
 export function downloadShortcutFile(name: string, base64File: string) {
-  const url = `/api/download?data=${encodeURIComponent(base64File)}&name=${encodeURIComponent(name)}`;
-  window.location.href = url;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  
+  if (isIOS) {
+    const url = `/api/download?data=${encodeURIComponent(base64File)}&name=${encodeURIComponent(name)}`;
+    window.location.href = `shortcuts://import-shortcut?url=${encodeURIComponent(window.location.origin + url)}`;
+  } else {
+    const url = `/api/download?data=${encodeURIComponent(base64File)}&name=${encodeURIComponent(name)}`;
+    window.location.href = url;
+  }
 }
