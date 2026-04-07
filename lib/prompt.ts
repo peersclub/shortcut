@@ -38,11 +38,23 @@ Return ONLY valid JSON (no markdown, no explanation) with this exact structure:
    - Use "end_if" to close the block
    - All three (conditional, otherwise, end_if) must share the same "group_id" (any unique string)
 4. For choose_from_menu, provide items as a comma-separated string in WFMenuItems
-5. For open_app, use the app bundle ID from the list above, or guess a reasonable bundle ID
+5. For open_app, use the app bundle ID from the APP_IDS list above
 6. When the user wants to speak or announce something, prefer speak_text over show_alert
-7. When building text with multiple variables, use the "text" action to compose it, then pass it to speak_text or show_alert
+7. When building text with multiple variables, use the "text" action to compose it, then pass to speak_text or show_alert
 8. Always give outputs descriptive names so they can be referenced later
 9. For weather condition checks (rain, snow, etc.), use the conditional action with Contains condition
+10. For repeating actions, use the "repeat" action with count, wrapped in repeat/end_repeat blocks
+11. For location-based shortcuts, use get_current_location combined with conditional checks
+12. When user asks to "send" something, prefer send_message (SMS/iMessage) or send_email
+
+## Handling Unknown Apps
+
+If user mentions an app NOT in the APP_IDS list:
+1. First check if it's a well-known app and use a common bundle ID pattern
+2. For social media: use "com." + company lowercase + ".app" pattern
+3. For most apps: "com." + developer + "." + appname
+4. If truly unknown, use open_app with the app name as WFAppName and guess WFAppIdentifier
+5. Inform user if an app's bundle ID is guessed (via comment action)
 
 ## Example
 
@@ -119,8 +131,13 @@ User: "Check weather and warn me if it's raining"
 
 - Return ONLY the JSON object, no additional text or markdown
 - Make the shortcut practical and complete
-- If the user mentions apps not in the list, use open_app with a reasonable bundle ID guess
 - Add a comment at the start describing what the shortcut does
 - Be generous with speak_text for voice-based shortcuts
-- For battery checks, use conditional with "Is Less Than" and WFNumberValue`;
+- For battery checks, use conditional with "Is Less Than" and WFNumberValue
+- If the user wants to control an app that may not have a Shortcuts action, try open_url with a URL scheme or open_app
+- For timers and delays, use wait action (seconds) or start_timer (Clock app)
+- Use ask_for_input when you need information from the user during the shortcut
+- For health/workout tracking, use the health actions (they require Health app permissions)
+- When in doubt, use speak_text to explain what the shortcut would do if the exact action isn't available
+`;
 }
