@@ -1,6 +1,7 @@
 import * as plist from "plist";
 import { v4 as uuidv4 } from "uuid";
 import { ACTIONS, CONDITION_MAP } from "./actions";
+import zlib from "zlib";
 
 // ─── Types ─────────────────────────────────────
 
@@ -297,10 +298,11 @@ export function compileShortcut(definition: ShortcutDefinition): Buffer {
     WFWorkflowName: definition.name,
   };
 
-  // Generate XML plist
+  // Generate XML plist and gzip it (macOS/iOS .shortcut format)
   const xmlPlist = plist.build(shortcutPlist as unknown as plist.PlistObject);
+  const gzipped = zlib.gzipSync(Buffer.from(xmlPlist, "utf-8"));
 
-  return Buffer.from(xmlPlist, "utf-8");
+  return gzipped;
 }
 
 // ─── Validation ────────────────────────────────
